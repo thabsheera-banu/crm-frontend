@@ -2,6 +2,7 @@
 import { Title } from '@mui/icons-material';
 import { lazy, Suspense } from 'react';
 import { Outlet, Navigate, useRoutes } from 'react-router-dom';
+import EditAllDeal from 'src/crm/Deal/EditAllDeal';
 import TitleDescription from 'src/crm/Deal/TitleDescription';
 
 import DashboardLayout from 'src/layouts/dashboard';
@@ -47,12 +48,7 @@ export default function Router() {
         { path: 'deal', element: <Deal/> },
         { path: 'deal/titledesc/:id', element: <TitleDescription/> },
         { path: 'lead/edit/:id', element: <EditAll/> },
-
-
-
-
-
-
+        { path: 'deal/edit/:id', element: <EditAllDeal/> },
 
 
       ],

@@ -7,10 +7,15 @@ import Iconify from 'src/components/iconify/iconify';
 import Popover from '@mui/material/Popover';
 import MenuItem from '@mui/material/MenuItem';
 import { Link, useParams } from 'react-router-dom';
+import TablePagination from '@mui/material/TablePagination';
+
 
 
 function DealTable() {
-   
+
+    const [page, setPage] = useState(0);
+
+    const [rowsPerPage, setRowsPerPage] = useState(5);
 
     const [leads, setLeads] = useState([]);
 
@@ -19,6 +24,21 @@ function DealTable() {
     const userId = localStorage.getItem('userId')
 
     const username = localStorage.getItem('username');
+
+    const emptyRows = rowsPerPage - Math.min(rowsPerPage, leads.length - page * rowsPerPage);
+
+    const handleChangePage = (event, newPage) => {
+      setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+      setRowsPerPage(parseInt(event.target.value, 10));
+      setPage(0);
+
+    };
+
+    const displayedLeads = leads.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  
 
     const handleOpenMenu = (event) => {
       setOpen(event.currentTarget);
@@ -69,6 +89,8 @@ function DealTable() {
 
  
   return (
+    <>
+
     <Table>
       <TableHead>
         <TableRow>
@@ -77,7 +99,7 @@ function DealTable() {
           <TableCell>Value</TableCell>
           <TableCell>Organization</TableCell>
           <TableCell>Contact Person</TableCell>
-          <TableCell>Expected closing dste</TableCell>
+          <TableCell>Expected closing date</TableCell>
 
           <TableCell>Next Activity</TableCell>
           <TableCell>Owner</TableCell>
@@ -88,22 +110,45 @@ function DealTable() {
       </TableHead>
       <TableBody>
 
-        {Array.isArray(leads) && leads.length > 0 ? (
-            leads.map((deal) =>(
+        {Array.isArray(displayedLeads) && leads.length > 0 ? (
+            displayedLeads.map((deal) =>(
 
          
           <TableRow key={deal.id} >
             <TableCell>
               <Checkbox  />
             </TableCell>
-            <Link to={`/deal/titledesc/${deal.id}`}>
-            <TableCell  >{deal.title}</TableCell>
-            </Link>
-            <TableCell>Rs :{deal.value} </TableCell>
-            <TableCell> {deal.organization}</TableCell>
-            <TableCell> {deal.contact_person}</TableCell>
-            <TableCell> {deal.Expected_close_date}</TableCell>
-            <TableCell>Activity</TableCell>
+            
+            <TableCell>
+            <Link to={`/deal/titledesc/${deal.id}`} style={{ textDecoration: 'none' ,color:'black' }}>
+              {deal.title}
+              </Link>
+              </TableCell>
+            <TableCell>
+            <Link to={`/deal/titledesc/${deal.id}`} style={{ textDecoration: 'none' ,color:'black' }}>
+              Rs :{deal.value}
+              </Link>
+               </TableCell>
+            <TableCell>
+            <Link to={`/deal/titledesc/${deal.id}`} style={{ textDecoration: 'none'  ,color:'black'}}>
+               {deal.organization}
+               </Link>
+               </TableCell>
+            <TableCell> 
+            <Link to={`/deal/titledesc/${deal.id}`} style={{ textDecoration: 'none',color:'black' }}>
+              {deal.contact_person}
+              </Link>
+              </TableCell>
+            <TableCell>
+            <Link to={`/deal/titledesc/${deal.id}`} style={{ textDecoration: 'none',color:'black' }}>
+               {deal.Expected_close_date}
+               </Link>
+               </TableCell>
+            <TableCell>
+            <Link to={`/deal/titledesc/${deal.id}`} style={{ textDecoration: 'none',color:'black' }}>
+              Activity
+              </Link>
+              </TableCell>
             <TableCell>{username}</TableCell>
             <TableCell> <IconButton onClick={handleOpenMenu}>
             <Iconify icon="eva:more-vertical-fill" />
@@ -135,10 +180,27 @@ function DealTable() {
    ) : (
     <TableCell colspan={6}>No Leads Available </TableCell>
    )}
+
+
      
       </TableBody>
+
+     
     </Table>
+
+    <TablePagination
+          page={page}
+          component="div"
+          count={leads.length}
+          rowsPerPage={rowsPerPage}
+          onPageChange={handleChangePage}
+          rowsPerPageOptions={[5, 10, 25]}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+    </>
+
   );
+ 
 }
 
 export default DealTable;

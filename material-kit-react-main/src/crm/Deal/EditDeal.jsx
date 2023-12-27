@@ -4,22 +4,14 @@ import EditIcon from '@mui/icons-material/Edit';
 import axiosInstance from 'src/axios/Axios';
 import { useParams } from 'react-router-dom';
 
-function EditLead() {
+function EditDeal() {
   const [leadData, setLeadData] = useState({});
 
   const [editingField, setEditingField] = useState(null);
 
   const { id } = useParams();
 
-  //   useEffect(() => {
-  //   axiosInstance.get(`http://127.0.0.1:8000/leads/${id}/`) 
-  //     .then(response => {
-  //       setLeadData(response.data);
-  //     })
-  //     .catch(error => {
-  //       console.error('Error fetching lead data:', error);
-  //     });
-  // }, []);
+
 
   const handleFieldChange = (fieldName, value) => {
     setLeadData({ ...leadData, [fieldName]: value });
@@ -38,7 +30,7 @@ function EditLead() {
       phone : leadData.phone,
       organization : leadData.organization
      };
-    axiosInstance.put(`http://127.0.0.1:8000/leads/${id}/`, dataToUpdate) 
+    axiosInstance.put(`http://127.0.0.1:8000/deals/${id}/`, dataToUpdate) 
       .then(response => {
         console.log(`Field ${editingField} updated:`, response.data);
         setEditingField(null);
@@ -152,4 +144,4 @@ function EditLead() {
   );
 }
 
-export default EditLead;
+export default EditDeal;

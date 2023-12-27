@@ -25,9 +25,17 @@ const useStyles = makeStyles({
   },
 });
 
-const PipelineStages = (onPipelineStagesChange) => {
+const handlePipelineStagesChange = (selectedStages) => {
+  setFormData({
+    ...formData,
+    pipeline_status: selectedStages, 
+  });
+};
+
+
+const PipelineStages = ({ onPipelineStagesChange  }) => {
   const classes = useStyles();
-  const [selectedStages, setSelectedStages] = useState(['1']); 
+  const [selectedStages, setSelectedStages] = useState([]); 
   const stages = [
     { id: '1', label: 'Qualified' },
     { id: '2', label: 'Contact Made' },
@@ -38,12 +46,13 @@ const PipelineStages = (onPipelineStagesChange) => {
 
   const handleButtonClick = (stageId) => {
     setSelectedStages((prevSelectedStages) => {
-      if (prevSelectedStages.includes(stageId)) {
-        onPipelineStagesChange(prevSelectedStages);
-        return prevSelectedStages.filter((id) => id !== stageId);
-      } else {
-        return [...prevSelectedStages, stageId];
-      }
+      const isStageSelected = prevSelectedStages.includes(stageId);
+      const updatedStages = isStageSelected
+        ? prevSelectedStages.filter((id) => id !== stageId)
+        : [...prevSelectedStages, stageId];
+
+      onPipelineStagesChange(updatedStages); 
+      return updatedStages;
     });
   };
 
@@ -53,8 +62,10 @@ const PipelineStages = (onPipelineStagesChange) => {
         <Tooltip title={stage.label} key={stage.id}>
           <Button
             variant="outlined"
-            className={`${classes.button} ${selectedStages.includes(stage.id) ? classes.selectedButton : ''}`}
-            onMouseLeave={(e) => e.currentTarget.style.color = 'transparent'}
+            className={`${classes.button} ${
+              selectedStages.includes(stage.id) ? classes.selectedButton : ''
+            }`}
+            onMouseLeave={(e) => (e.currentTarget.style.color = 'transparent')}
             onClick={() => handleButtonClick(stage.id)}
           >
             {stage.label}

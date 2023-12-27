@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import EditLead from './EditLead';
 import Activities from './Activities';
 import Grid from '@mui/material/Grid';
-import Drawer from '@mui/material/Drawer';
 
 function EditAll() {
 

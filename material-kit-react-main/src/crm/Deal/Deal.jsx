@@ -38,7 +38,7 @@ function Deal() {
 
   const labelChoices = ['Hot', 'Warm', 'Cold']; 
   const valueChoices = ['Indian Rupee' ,'USD'];
-  const Choices = ['Work ' ,'Home']
+  const Choices = ['Work' ,'Home']
   const pipelinechoice = ['pipeline']
 
   const handleInputChange = (event) => {
@@ -118,13 +118,21 @@ function Deal() {
                   </TextField>
                 </Grid>
               </Grid>
-              <TextField onChange={handleInputChange} value={formData.pipeline} name='pipeline' label="pipeline" fullWidth select>
-              {pipelinechoice.map((choice) => (
-                  <MenuItem key={choice} value={choice}>
-                    {choice}
-                  </MenuItem>
-                ))}             
-             </TextField>
+              <TextField
+                  onChange={handleInputChange}
+                  value={formData.pipeline}
+                  name='pipeline'
+                  label="Pipeline"
+                  fullWidth
+                  select
+                >
+                  {pipelinechoice.map((choice) => (
+                    <MenuItem key={choice} value={choice}>
+                      {choice}
+                    </MenuItem>
+                  ))}
+                </TextField>
+
               <PipelineStages onPipelineStagesChange={handlePipelineStagesChange}/>
               <TextField
                   onChange={handleInputChange}
@@ -194,6 +202,8 @@ function Deal() {
           </Button>
         </DialogActions>
       </Dialog>
+
+     
     </div>
   );
 }

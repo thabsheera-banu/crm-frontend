@@ -8,20 +8,35 @@ import Popover from '@mui/material/Popover';
 import Iconify from 'src/components/iconify/iconify';
 import MenuItem from '@mui/material/MenuItem';
 import { Link } from 'react-router-dom';
+import TablePagination from '@mui/material/TablePagination';
+
 
 
 function LeadTable() {
+    const [page, setPage] = useState(0);
+
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+
     const [leads, setLeads] = useState([]);
 
     const [deals,setDeals] = useState([])
 
     const [open, setOpen] = useState(null);
 
-    const [openDrawer, setOpenDrawer] = useState(false);
 
-    const toggleDrawer = () => {
-      setOpenDrawer(!openDrawer);
+    const emptyRows = rowsPerPage - Math.min(rowsPerPage, leads.length - page * rowsPerPage);
+
+    const handleChangePage = (event, newPage) => {
+      setPage(newPage);
     };
+
+    const handleChangeRowsPerPage = (event) => {
+      setRowsPerPage(parseInt(event.target.value, 10));
+      setPage(0);
+
+    };
+
+    const displayedLeads = leads.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
     const userId = localStorage.getItem('userId')
 
@@ -85,6 +100,7 @@ function LeadTable() {
     };
  
   return (
+    <>
     <Table>
       <TableHead>
         <TableRow>
@@ -100,19 +116,33 @@ function LeadTable() {
       </TableHead>
       <TableBody>
           
-      {Array.isArray(leads) && leads.length > 0 ? (
-          leads.map((lead) => (
+      {Array.isArray(displayedLeads) && leads.length > 0 ? (
+          displayedLeads.map((lead) => (
                       <TableRow  key={lead.id}>
             <TableCell>
               <Checkbox  />
             </TableCell>
-            <Link to={`/lead/edit/${lead.id}`}>
-            <TableCell>{lead.title}</TableCell>
-            </Link>
-            <TableCell>No Activity</TableCell>
-            <TableCell>{lead.labels}</TableCell>
-
-            <TableCell >{lead.Expected_close_date}</TableCell>
+            <TableCell>
+            <Link to={`/lead/edit/${lead.id}`}  style={{ textDecoration: 'none' ,color:'black'}}>
+              {lead.title}
+              </Link>
+              </TableCell>
+            <TableCell>
+              <Link to={`/lead/edit/${lead.id}`} style={{ textDecoration: 'none' ,color:'black'}}>
+              No Activity
+              </Link>
+              </TableCell>
+            <TableCell>
+            <Link to={`/lead/edit/${lead.id}`}  style={{ textDecoration: 'none',color:'black' }}>
+              {lead.labels}
+              </Link>
+              </TableCell>
+              
+            <TableCell >
+            <Link to={`/lead/edit/${lead.id}`}  style={{ textDecoration: 'none',color:'black' }}>
+              {lead.Expected_close_date}
+              </Link>
+              </TableCell>
 
             <TableCell>{username}</TableCell>
             <TableCell> <IconButton onClick={handleOpenMenu}>
@@ -154,6 +184,17 @@ function LeadTable() {
   )}    
       </TableBody>
     </Table>
+
+    <TablePagination
+          page={page}
+          component="div"
+          count={leads.length}
+          rowsPerPage={rowsPerPage}
+          onPageChange={handleChangePage}
+          rowsPerPageOptions={[5, 10, 25]}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+    </>
   );
 }
 

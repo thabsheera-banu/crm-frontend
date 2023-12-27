@@ -36,7 +36,9 @@ function Lead() {
 
   const labelChoices = ['Hot', 'Warm', 'Cold']; 
   const valueChoices = ['Indian Rupee' ,'USD'];
-  const Choices = ['Work ' ,'Home']
+  const phoneChoices = ['Work' ,'Home']
+  const emailChoices = ['Work' ,'Home']
+
 
 
   const handleClickOpen = () => {
@@ -141,7 +143,7 @@ function Lead() {
                 </Grid>
                 <Grid item xs={6}>
                   <TextField onChange={handleInputChange} label="" value={formData.phone_mode} name='phone_mode' fullWidth select>
-                  {Choices.map((choice) => (
+                  {phoneChoices.map((choice) => (
                   <MenuItem key={choice} value={choice}>
                     {choice}
                   </MenuItem>
@@ -155,7 +157,7 @@ function Lead() {
                 </Grid>
                 <Grid item xs={6}>
                   <TextField onChange={handleInputChange} value={formData.email_mode} name='email_mode' label="" fullWidth select>
-                  {Choices.map((choice) => (
+                  {emailChoices.map((choice) => (
                   <MenuItem  key={choice} value={choice}   onChange={handleInputChange}>
                     {choice}
                   </MenuItem>

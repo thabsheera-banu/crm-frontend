@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-
-import { List,ListItem,Tab, Tabs,  TextField, Box, Button } from '@mui/material';
+import { List,ListItem, Tabs, Tab, TextField, Box, Button } from '@mui/material';
 import axiosInstance from 'src/axios/Axios';
 import { useParams } from 'react-router-dom';
 
-function Activities() {
+function EditActivity() {
   const { id } = useParams();
   const [selectedTab, setSelectedTab] = useState(0);
   const [activityContent, setActivityContent] = useState('');
@@ -88,4 +87,4 @@ function Activities() {
   );
 }
 
-export default Activities;
+export default EditActivity;
