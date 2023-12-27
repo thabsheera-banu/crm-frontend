@@ -14,6 +14,7 @@ function TitleDescription() {
   const [dealStatus, setDealStatus] = useState({});
 
   const [pipelineStages, setPipelineStages] = useState([]); 
+
   const [selectedStages, setSelectedStages] = useState([]); 
 
   const handleSweetAlert = () => {
@@ -74,6 +75,7 @@ function TitleDescription() {
               });
       }, [id]);
 
+     
  
   return (
     <>
@@ -156,7 +158,7 @@ function TitleDescription() {
       </div>
       {/* pipeline stages */}
 
-      <Pipeline  pipelineStages={pipelineStages} selectedStages={selectedStages}/>
+      <Pipeline  pipelineStages={pipelineStages} selectedStages={selectedStages} dealStatus={dealStatus}   />
       
       <div style={{marginTop:'100px'}}>
         <EditAllDeal/>

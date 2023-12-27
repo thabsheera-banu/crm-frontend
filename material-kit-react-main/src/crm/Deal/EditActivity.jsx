@@ -14,7 +14,7 @@ function EditActivity() {
 
   const handleSave = async () => {
     try {
-      await axiosInstance.put(`http://127.0.0.1:8000/leads/${id}/`, {
+      await axiosInstance.put(`http://127.0.0.1:8000/deals/${id}/`, {
         [getActivityField(selectedTab)]: activityContent,
       });
     } catch (error) {

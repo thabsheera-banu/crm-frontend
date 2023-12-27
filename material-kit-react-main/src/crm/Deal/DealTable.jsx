@@ -68,25 +68,21 @@ function DealTable() {
         fetchDeals();
       }, []);
 
-      const handleDelete = async(dealId) =>{
-        try{
-  
-          await axiosInstance.delete(`http://127.0.0.1:8000/deals/${dealId}`,
-          {
-            headers: {
-              'Authorization': `Bearer ${localStorage.getItem('access')}`,
-    
-            },
-  
-          });
-          setLeads((prevleads) => prevleads.filter((deal) => deal.id !== dealId));
-  
-        }catch(error){
-          console.error('Error Fetching delete' , error)
-        }
-  
-      }
 
+      const handleDelete = async (id) => {
+        try {
+            await axiosInstance.delete(`http://127.0.0.1:8000/deals/${id}/`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access')}`,
+                },
+            });
+            setLeads(leads.filter((deal) => deal.id !== id));
+        } catch (error) {
+            console.error('Error deleting deal:', error);
+        }
+    };
+    
+      
  
   return (
     <>
@@ -169,8 +165,10 @@ function DealTable() {
                     Edit
                     </MenuItem>
 
-                    <MenuItem onClick={()=>handleDelete(deal.id)} sx={{ color: 'error.main' }}>
-                    <Iconify icon="eva:trash-2-outline" sx={{ mr: 2 }} />
+                    
+
+                    <MenuItem onClick={() => handleDelete(deal.id)} sx={{ color: 'error.main' }}>
+                    <Iconify  icon="eva:trash-2-outline" sx={{ mr: 2 }} />
                     Delete
                     </MenuItem>
                 </Popover>

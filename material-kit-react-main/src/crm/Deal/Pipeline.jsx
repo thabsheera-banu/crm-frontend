@@ -2,7 +2,7 @@
 import React from 'react';
 import { Button } from '@mui/material';
 
-function Pipeline({ pipelineStages }) {
+function Pipeline({ pipelineStages ,dealStatus }) {
     const buttonStyle = { marginRight: '10px' };
 
     return (
@@ -16,10 +16,14 @@ function Pipeline({ pipelineStages }) {
                             ...buttonStyle,
                             height: '30px',
                             width: '250px',
-                            backgroundColor: stage.selected ? 'green' : 'gray'
+                            // backgroundColor: stage.selected ? 'green' : 'gray'
+                            backgroundColor:
+                                (dealStatus.won && stage.selected) ? 'green' : 
+                                (dealStatus.lost && stage.selected) ? 'red' : 
+                                stage.selected ? 'green' : 'gray', 
                         }}
                     >
-                        {stage.title}
+                        {stage.title} 
                     </Button>
                 ))}
             </div>
