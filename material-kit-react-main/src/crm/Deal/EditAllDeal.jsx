@@ -1,7 +1,8 @@
 import React from 'react'
+
 import EditDeal from './EditDeal'
-import EditActivity from './EditActivity'
 import Grid from '@mui/material/Grid';
+import EditActivity from './EditActivity'
 
 
 function EditAllDeal() {

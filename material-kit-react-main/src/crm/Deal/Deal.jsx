@@ -1,5 +1,5 @@
-import axiosInstance from 'src/axios/Axios';
 import React, { useState } from 'react';
+import axiosInstance from 'src/axios/Axios';
 
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
@@ -9,8 +9,9 @@ import TextField from '@mui/material/TextField';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
-import PipelineStages from './PipelineStages';
+
 import DealTable from './DealTable';
+import PipelineStages from './PipelineStages';
 
 function Deal() {
   const [open, setOpen] = useState(false);

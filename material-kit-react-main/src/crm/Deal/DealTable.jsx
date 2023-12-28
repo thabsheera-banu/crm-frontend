@@ -1,13 +1,19 @@
+import React, { useState, useEffect } from 'react';
 
 import axiosInstance from 'src/axios/Axios';
-import React, { useEffect, useState } from 'react';
-import { Table, TableHead, TableBody, TableRow, TableCell, Checkbox } from '@mui/material';
+
 import IconButton from '@mui/material/IconButton';
-import Iconify from 'src/components/iconify/iconify';
+
+import { Table, TableHead, TableRow,TableBody, Checkbox , TableCell } from '@mui/material';
+
 import Popover from '@mui/material/Popover';
+import Iconify from 'src/components/iconify/iconify';
+
+import { Link } from 'react-router-dom';
 import MenuItem from '@mui/material/MenuItem';
-import { Link, useParams } from 'react-router-dom';
 import TablePagination from '@mui/material/TablePagination';
+
+import Swal from 'sweetalert2';
 
 
 
@@ -19,13 +25,21 @@ function DealTable() {
 
     const [leads, setLeads] = useState([]);
 
-    const [open, setOpen] = useState(null);
 
     const userId = localStorage.getItem('userId')
 
     const username = localStorage.getItem('username');
 
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, leads.length - page * rowsPerPage);
+    const [openPopovers,setOpenPopovers] = useState({});
+
+    const handleOpenMenu = (event, dealId) =>{
+      setOpenPopovers({...openPopovers,[dealId]:event.currentTarget });
+    };
+
+    const handleCloseMenu = (dealId) =>{
+      setOpenPopovers({...openPopovers,  [dealId]: null });
+    }
+
 
     const handleChangePage = (event, newPage) => {
       setPage(newPage);
@@ -39,14 +53,6 @@ function DealTable() {
 
     const displayedLeads = leads.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
   
-
-    const handleOpenMenu = (event) => {
-      setOpen(event.currentTarget);
-    };
-  
-    const handleCloseMenu = () => {
-      setOpen(null);
-    };
 
     const fetchDeals = async () => {
         try {
@@ -69,18 +75,37 @@ function DealTable() {
       }, []);
 
 
-      const handleDelete = async (id) => {
-        try {
-            await axiosInstance.delete(`http://127.0.0.1:8000/deals/${id}/`, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('access')}`,
-                },
-            });
-            setLeads(leads.filter((deal) => deal.id !== id));
-        } catch (error) {
-            console.error('Error deleting deal:', error);
-        }
-    };
+     const handleDelete = async(dealId) =>{
+      try{
+
+        const result = await Swal.fire({
+          title: 'Are you sure?',
+          text: 'You will not be able to recover this item!',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, delete it!',
+        });
+
+        if (result.isConfirmed) {
+
+        await axiosInstance.delete(`http://127.0.0.1:8000/deals/${dealId}/`,
+        {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('access')}`,
+  
+          },
+
+        });
+        setLeads((prevleads) => prevleads.filter((lead) => lead.id !== dealId));
+      }
+      }catch(error){
+        console.error('Error Fetching delete' , error)
+        Swal.fire('Error', 'Failed to delete the item.', 'error');
+      }
+
+    }
     
       
  
@@ -146,28 +171,23 @@ function DealTable() {
               </Link>
               </TableCell>
             <TableCell>{username}</TableCell>
-            <TableCell> <IconButton onClick={handleOpenMenu}>
+            <TableCell>
+            <IconButton onClick={(event) => handleOpenMenu(event, deal.id)}>
             <Iconify icon="eva:more-vertical-fill" />
           </IconButton>
           </TableCell>
                     <Popover
-                    open={!!open}
-                    anchorEl={open}
-                    onClose={handleCloseMenu}
+                    open={!!openPopovers[deal.id]}
+                    anchorEl={openPopovers[deal.id]}
+                    onClose={() => handleCloseMenu(deal.id)}
                     anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
                     transformOrigin={{ vertical: 'top', horizontal: 'right' }}
                     PaperProps={{
                     sx: { width: 140 },
                     }}
                 >
-                    <MenuItem onClick={handleCloseMenu}>
-                    <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
-                    Edit
-                    </MenuItem>
-
-                    
-
-                    <MenuItem onClick={() => handleDelete(deal.id)} sx={{ color: 'error.main' }}>
+                   
+                    <MenuItem onClick={() => handleDelete(deal.id)}  sx={{ color: 'error.main' }}>
                     <Iconify  icon="eva:trash-2-outline" sx={{ mr: 2 }} />
                     Delete
                     </MenuItem>

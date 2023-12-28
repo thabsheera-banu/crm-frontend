@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { TextField, IconButton, Button } from '@mui/material';
+import { TextField, IconButton, Button , MenuItem} from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import axiosInstance from 'src/axios/Axios';
 import { useParams } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 function EditLead() {
   const [leadData, setLeadData] = useState({});
@@ -11,15 +12,16 @@ function EditLead() {
 
   const { id } = useParams();
 
-  //   useEffect(() => {
-  //   axiosInstance.get(`http://127.0.0.1:8000/leads/${id}/`) 
-  //     .then(response => {
-  //       setLeadData(response.data);
-  //     })
-  //     .catch(error => {
-  //       console.error('Error fetching lead data:', error);
-  //     });
-  // }, []);
+  const handleSweetAlert = () => {
+    Swal.fire({
+      title: 'Congratulations!',
+      text: 'updated successfully',
+      icon: 'success',
+      confirmButtonText: 'Great!',
+    });
+  };
+
+  
 
   const handleFieldChange = (fieldName, value) => {
     setLeadData({ ...leadData, [fieldName]: value });
@@ -36,18 +38,23 @@ function EditLead() {
       contact_person : leadData.contact_person,
       email : leadData.email,
       phone : leadData.phone,
-      organization : leadData.organization
+      organization : leadData.organization,
+      labels : leadData.labels
      };
     axiosInstance.put(`http://127.0.0.1:8000/leads/${id}/`, dataToUpdate) 
       .then(response => {
         console.log(`Field ${editingField} updated:`, response.data);
         setEditingField(null);
+        handleSweetAlert()
       
       })
       .catch(error => {
         console.error(`Error updating field :`, error);
       });
   };
+
+ 
+
 
   return (
     <div>
@@ -66,6 +73,31 @@ function EditLead() {
         <Button onClick={handleSaveField}>Save</Button>
       )}
 
+      </div>
+
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <TextField
+          select
+          label="Label"
+          variant="outlined"
+          sx={{ width: '350px', mr: '10px' }}
+          value={editingField === 'labels' ? leadData.labels || '' : leadData.labels || ''}
+          onChange={(e) => handleFieldChange('labels', e.target.value)}
+        >
+          {['Hot', 'Warm', 'Cold'].map((option) => (
+            <MenuItem key={option} value={option}>
+              {option}
+            </MenuItem>
+          ))}
+        </TextField>
+        {editingField !== 'labels' && (
+          <IconButton aria-label="edit" onClick={() => handleEditField('labels')}>
+            <EditIcon />
+          </IconButton>
+        )}
+        {editingField === 'labels' && (
+          <Button onClick={handleSaveField}>Save</Button>
+        )}
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center' }}>

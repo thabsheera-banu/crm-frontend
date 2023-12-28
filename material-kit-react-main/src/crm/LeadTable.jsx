@@ -9,7 +9,7 @@ import Iconify from 'src/components/iconify/iconify';
 import MenuItem from '@mui/material/MenuItem';
 import { Link } from 'react-router-dom';
 import TablePagination from '@mui/material/TablePagination';
-
+import Swal from 'sweetalert2';
 
 
 function LeadTable() {
@@ -19,10 +19,20 @@ function LeadTable() {
 
     const [leads, setLeads] = useState([]);
 
-    const [deals,setDeals] = useState([])
 
-    const [open, setOpen] = useState(null);
+    const [openPopovers, setOpenPopovers] = useState({});
 
+    const handleOpenMenu = (event, leadId) => {
+      setOpenPopovers({ ...openPopovers, [leadId]: event.currentTarget });
+    };
+
+    const handleCloseMenu = (leadId) => {
+      setOpenPopovers({ ...openPopovers, [leadId]: null });
+    };
+
+
+
+    
 
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, leads.length - page * rowsPerPage);
 
@@ -42,7 +52,7 @@ function LeadTable() {
 
     const username = localStorage.getItem('username');
 
-    //Show all details
+//Show all details
 
     const fetchLeads = async () => {
         try {
@@ -60,23 +70,26 @@ function LeadTable() {
         }
       };
     
-      useEffect(() => {
-        fetchLeads();
-      }, []);
+     
 
-    const handleOpenMenu = (event) => {
-      setOpen(event.currentTarget);
-      setOpenDrawer(true);
-    };
-  
-    const handleCloseMenu = () => {
-      setOpen(null);
-    };
-    
-    //delete function 
+   
+//delete function 
 
     const handleDelete = async(leadId) =>{
       try{
+
+        const result = await Swal.fire({
+          title: 'Are you sure?',
+          text: 'You will not be able to recover this item!',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, delete it!',
+        });
+
+        if (result.isConfirmed) {
+
 
         await axiosInstance.delete(`http://127.0.0.1:8000/leads/${leadId}/`,
         {
@@ -87,18 +100,82 @@ function LeadTable() {
 
         });
         setLeads((prevleads) => prevleads.filter((lead) => lead.id !== leadId));
-
+      }
       }catch(error){
         console.error('Error Fetching delete' , error)
+        Swal.fire('Error', 'Failed to delete the item.', 'error');
       }
 
     }
 
-    const convertToDeal = (leadData) => {
-      setDeals([...deals, leadData]);
-      setLeads((prevLeads) => prevLeads.filter((lead) => lead.id !== leadData.id));
+
+// changes the label colors
+
+    const getLabelColor = (label) => {
+      switch (label) {
+        case 'Hot':
+          return { backgroundColor: 'red', textColor: 'white' };
+        case 'Warm':
+          return { backgroundColor: 'blue', textColor: 'white' };
+        case 'Cold':
+          return { backgroundColor: 'yellow', textColor: 'black' };
+        default:
+          return ''; 
+      }
     };
- 
+
+//convert lead to deal
+
+    const handleConvertToDeal = async (leadId) => {
+      try {
+        const leadToConvert = leads.find(lead => lead.id === leadId);
+    
+        await axiosInstance.post(
+          'http://127.0.0.1:8000/deals/', 
+          {
+            contact_person :leadToConvert.contact_person,
+            title: leadToConvert.title,
+            organization : leadToConvert.organization,
+            owner : leadToConvert.owner,
+            Expected_close_date : leadToConvert.Expected_close_date,
+            value : leadToConvert.value,
+            value_mode : leadToConvert.value_mode,
+            phone : leadToConvert.phone,
+            phone_mode: leadToConvert.phone_mode,
+            email:leadToConvert.email,
+            email_mode:leadToConvert.email_mode,
+
+          },
+          {
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('access')}`,
+            },
+          }
+        );
+
+        await axiosInstance.delete(
+          `http://127.0.0.1:8000/leads/${leadId}/`,
+          {
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('access')}`,
+            },
+          }
+        );
+    
+        setLeads((prevLeads) => prevLeads.filter((lead) => lead.id !== leadId));
+      } 
+    
+      catch (error) {
+        console.error('Error converting lead to deal:', error);
+      }
+    };
+
+// fetch all leads
+
+    useEffect(() => {
+      fetchLeads();
+    }, []);
+  
   return (
     <>
     <Table>
@@ -129,13 +206,22 @@ function LeadTable() {
               </TableCell>
             <TableCell>
               <Link to={`/lead/edit/${lead.id}`} style={{ textDecoration: 'none' ,color:'black'}}>
-              No Activity
-              </Link>
+             No Activity        
+             </Link>
               </TableCell>
             <TableCell>
             <Link to={`/lead/edit/${lead.id}`}  style={{ textDecoration: 'none',color:'black' }}>
-              {lead.labels}
-              </Link>
+            <span
+                  style={{
+                    backgroundColor: getLabelColor(lead.labels).backgroundColor,
+                    color: getLabelColor(lead.labels).textColor,
+                    padding: '3px 8px',
+                    borderRadius: '3px',
+                  }}
+                >
+                  {lead.labels}
+                </span>         
+                  </Link>
               </TableCell>
               
             <TableCell >
@@ -144,25 +230,27 @@ function LeadTable() {
               </Link>
               </TableCell>
 
-            <TableCell>{username}</TableCell>
-            <TableCell> <IconButton onClick={handleOpenMenu}>
+            <TableCell>
+              {username}
+              </TableCell>
+            <TableCell> 
+              <IconButton onClick={(event) => handleOpenMenu(event, lead.id)}>
             <Iconify icon="eva:more-vertical-fill" />
           </IconButton>
           </TableCell>
 
           <Popover 
-        open={!!open}
-        anchorEl={open}
-        onClose={handleCloseMenu}
+       open={!!openPopovers[lead.id]}
+       anchorEl={openPopovers[lead.id]}
+       onClose={() => handleCloseMenu(lead.id)}
         anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
         PaperProps={{
           sx: { width: 140 },
         }}
       >
-        <MenuItem onClick={() => convertToDeal(lead)}>
-          {/* <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
-          Edit */}
+        <MenuItem onClick={() => handleConvertToDeal(lead.id)}>
+     
           Convert To Deal
         </MenuItem>
 

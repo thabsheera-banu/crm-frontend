@@ -30,7 +30,7 @@ function TitleDescription() {
           const storedStatus = JSON.parse(localStorage.getItem(`dealStatus_${id}`));
           if (storedStatus) {
             setDealStatus(storedStatus);
-          } else {
+          } else {-
             axiosInstance.get(`http://127.0.0.1:8000/deals/${id}/`)
               .then(response => {
                 setDealStatus(response.data);

@@ -11,13 +11,16 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 
 import LeadTable from './LeadTable';
+import { useNavigate } from 'react-router-dom';
 
 function Lead() {
+  const navigate = useNavigate()
   const [open, setOpen] = useState(false);
   
   const userId = localStorage.getItem('userId')
 
   const username = localStorage.getItem('username');
+
 
   const [formData, setFormData] = useState({
     contact_person: '',
@@ -76,6 +79,7 @@ function Lead() {
           'Authorization': `Bearer ${localStorage.getItem('access')}`,
         },
       });
+      navigate('/lead')
       handleClose();
     } catch (error) {
       console.error('Error adding lead:', error);

@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
-import { List,ListItem, Tabs, Tab, TextField, Box, Button } from '@mui/material';
-import axiosInstance from 'src/axios/Axios';
+
+import { List,Tab,Tabs, ListItem,  Box, TextField, Button } from '@mui/material';
+
 import { useParams } from 'react-router-dom';
+
+import axiosInstance from 'src/axios/Axios';
 
 function EditActivity() {
   const { id } = useParams();

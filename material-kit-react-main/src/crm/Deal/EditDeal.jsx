@@ -1,8 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { TextField, IconButton, Button } from '@mui/material';
+import React, { useState } from 'react';
+
 import EditIcon from '@mui/icons-material/Edit';
+
+import { TextField, Button, IconButton } from '@mui/material';
+
 import axiosInstance from 'src/axios/Axios';
 import { useParams } from 'react-router-dom';
+
+import Swal from 'sweetalert2';
 
 function EditDeal() {
   const [leadData, setLeadData] = useState({});
@@ -10,6 +15,15 @@ function EditDeal() {
   const [editingField, setEditingField] = useState(null);
 
   const { id } = useParams();
+
+  const handleSweetAlert = () => {
+    Swal.fire({
+      title: 'Congratulations!',
+      text: 'updated successfully',
+      icon: 'success',
+      confirmButtonText: 'Great!',
+    });
+  };
 
 
 
@@ -34,6 +48,8 @@ function EditDeal() {
       .then(response => {
         console.log(`Field ${editingField} updated:`, response.data);
         setEditingField(null);
+        handleSweetAlert()
+
       
       })
       .catch(error => {

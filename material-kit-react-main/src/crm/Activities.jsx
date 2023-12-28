@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 
-import { List,ListItem,Tab, Tabs,  TextField, Box, Button } from '@mui/material';
-import axiosInstance from 'src/axios/Axios';
+import { List,Tab,ListItem, Tabs,Box,  TextField,  Button } from '@mui/material';
 import { useParams } from 'react-router-dom';
+
+import axiosInstance from 'src/axios/Axios';
 
 function Activities() {
   const { id } = useParams();
