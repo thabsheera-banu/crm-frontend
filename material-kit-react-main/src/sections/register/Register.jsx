@@ -21,6 +21,8 @@ import { bgGradient } from 'src/theme/css';
 import Logo from 'src/components/logo';
 import Iconify from 'src/components/iconify';
 
+import Swal from 'sweetalert2';
+
 export default function Register() {
   const theme = useTheme();
   const router = useRouter();
@@ -56,6 +58,12 @@ export default function Register() {
 
       });
       console.log(response)
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Registration Successful!',
+        text: 'You have successfully registered.',
+      });
 
      
       router.push('/login');

@@ -158,7 +158,7 @@ function TitleDescription() {
       </div>
       {/* pipeline stages */}
 
-      <Pipeline  pipelineStages={pipelineStages} selectedStages={selectedStages} dealStatus={dealStatus}   />
+      <Pipeline  pipelineStages={pipelineStages} selectedStages={selectedStages} dealStatus={dealStatus} dealId={id} />
       
       <div style={{marginTop:'100px'}}>
         <EditAllDeal/>

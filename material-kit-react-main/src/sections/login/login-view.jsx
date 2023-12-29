@@ -22,6 +22,9 @@ import { bgGradient } from 'src/theme/css';
 import Logo from 'src/components/logo';
 import Iconify from 'src/components/iconify';
 
+import Swal from 'sweetalert2';
+
+
 // ----------------------------------------------------------------------
 
 export default function LoginView() {
@@ -63,6 +66,12 @@ export default function LoginView() {
       localStorage.setItem('refreshToken', refreshToken);
       localStorage.setItem('userId', userId)
       localStorage.setItem('username',username)
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Login Successful!',
+        text: 'You have successfully login.',
+      });
 
 
       router.push('/');

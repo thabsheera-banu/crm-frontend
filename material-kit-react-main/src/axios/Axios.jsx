@@ -40,7 +40,10 @@ axiosInstance.interceptors.response.use(
         const newAccessToken = response.data.access;
         localStorage.setItem('accessToken', newAccessToken);
 
-        originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
+        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+
+
+        // originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
 
         return axiosInstance(originalRequest);
       } catch (refreshError) {
